@@ -16,12 +16,13 @@ public class DataTables
 
     }
 
-    public DataTables(List<string>) : this()
+    public DataTables(List<string> convertList) : this()
     {
         this.RetDataTable = retDataTable;
     }
 
-    public DataTables(List<string>, DataTable retDataTable) : this()
+    public DataTables(List<string> convertList, DataTable retDataTable)
+        : this()
     {
         this.ConvertList = convertList;
         this.RetDataTable = retDataTable;
@@ -89,7 +90,7 @@ public class DataTables
 
     public void CopyDataTable(DataTable copyDataTable, string tableName)
     {
-        string connectionString = ConfigurationSettings.AppSettings["myConnectionString"];
+        string connectionString = ConfigurationSettings.AppSettings["mySQL"];
         SqlConnection scon = new SqlConnection(connectionString);
 
         using (SqlBulkCopy copyDt = new SqlBulkCopy(scon))
@@ -107,3 +108,4 @@ public class DataTables
     }
     #endregion
 }
+
