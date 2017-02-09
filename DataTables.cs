@@ -90,7 +90,7 @@ public class DataTables
 
     public void CopyDataTable(DataTable copyDataTable, string tableName)
     {
-        string connectionString = ConfigurationSettings.AppSettings["mySQL"];
+        string connectionString = ConfigurationManager.AppSettings["mySql"];
         SqlConnection scon = new SqlConnection(connectionString);
 
         using (SqlBulkCopy copyDt = new SqlBulkCopy(scon))
