@@ -28,6 +28,13 @@ public class DataTables
         this.ConvertList = convertList;
         this.RetDataTable = retDataTable;
     }
+
+    public DataTables(int colCount, List<string[]> convertList) : this()
+    {
+        this.ColCount = colCount;
+        this.ConvertList = convertList;
+        this.RetDataTable = retDataTable;
+    }
     #endregion
 
 
@@ -59,10 +66,35 @@ public class DataTables
 		get { return retDataTable;}
 		set { retDataTable = value;}
 	}
+
+    private int colCount;
+    public int ColCount
+    {
+        get { return colCount; }
+        set { colCount = value; }
+    }
     #endregion
 
 
     #region Methods
+    public DataTable BuildDataTable(int colCount, List<string[]> convertList)
+    {
+        DataTable buildNewDataTable = new DataTable();
+
+        for (int i = 0; i < colCount; i++)
+        {
+            Console.WriteLine(convertList[i][0] + ": " + convertList[i][1]);
+            DataColumn genericColumn = new DataColumn();
+            genericColumn.DataType = System.Type.GetType(convertList[i][0]);
+            genericColumn.ColumnName = convertList[i][1];
+            buildNewDataTable.Columns.Add(genericColumn);
+            genericColumn.Dispose();
+        }
+
+        return buildNewDataTable;
+    }
+
+
     public DataTable ConvertStringListToDataTable(List<string[]> convertList)
     {
         DataTable returnDataTable = new DataTable();
@@ -116,4 +148,3 @@ public class DataTables
     }
     #endregion
 }
-
