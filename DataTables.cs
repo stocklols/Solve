@@ -16,12 +16,13 @@ public class DataTables
 
     }
 
-    public DataTables(List<string> convertList) : this()
+    public DataTables(List<string[]> convertList)
+        : this()
     {
         this.RetDataTable = retDataTable;
     }
 
-    public DataTables(List<string> convertList, DataTable retDataTable)
+    public DataTables(List<string[]> convertList, DataTable retDataTable)
         : this()
     {
         this.ConvertList = convertList;
@@ -45,8 +46,8 @@ public class DataTables
         set { tableName = value; }
     }
 
-    private List<string> convertList;
-    public List<string> ConvertList
+    private List<string[]> convertList;
+    public List<string[]> ConvertList
     {
         get { return convertList; }
         set { convertList = value; }
@@ -62,7 +63,7 @@ public class DataTables
 
 
     #region Methods
-    public DataTable ConvertStringListToDataTable (List<string> convertList)
+    public DataTable ConvertStringListToDataTable(List<string[]> convertList)
     {
         DataTable returnDataTable = new DataTable();
         int colNumber = 0;
@@ -90,19 +91,26 @@ public class DataTables
 
     public void CopyDataTable(DataTable copyDataTable, string tableName)
     {
-        string connectionString = ConfigurationManager.AppSettings["mySql"];
+        string connectionString = ConfigurationManager.ConnectionStrings["mySql"].ConnectionString;
         SqlConnection scon = new SqlConnection(connectionString);
-
+        
         using (SqlBulkCopy copyDt = new SqlBulkCopy(scon))
         {
-            copyDt.DestinationTableName = tableName;
+            scon.Open();
+
             try
             {
+                copyDt.DestinationTableName = tableName;
                 copyDt.WriteToServer(copyDataTable);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Failed to bulk copy data table.  Details: " + ex.Message);
+            }
+            finally
+            {
+                scon.Dispose();
+                copyDt.Close();
             }
         }
     }
