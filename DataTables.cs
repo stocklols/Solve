@@ -16,6 +16,11 @@ public class DataTables
 
     }
 
+    public DataTables (string query) : this()
+    {
+        this.Query = query;
+    }
+
     public DataTables(List<string[]> convertList)
         : this()
     {
@@ -73,6 +78,14 @@ public class DataTables
         get { return colCount; }
         set { colCount = value; }
     }
+
+    private string query;
+    public string Query
+    {
+        get { return query; }
+        set { query = value; }
+    }
+    
     #endregion
 
 
@@ -145,6 +158,34 @@ public class DataTables
                 copyDt.Close();
             }
         }
+    }
+
+    public DataTable loadDataTableFromSql(string query)
+    {
+        DataTable returnQuery = new DataTable();
+        string connectionString = ConfigurationManager.ConnectionStrings["mySql"].ConnectionString;
+        SqlConnection scon = new SqlConnection(connectionString);
+
+        SqlCommand cmdReturnQuery = new SqlCommand(query, scon);
+        SqlDataAdapter daDt = new SqlDataAdapter(cmdReturnQuery);
+
+        try
+        {
+            scon.Open();
+            daDt.Fill(returnQuery);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to load data table from query.  Details: " + ex.Message);
+        }
+        finally
+        {
+            scon.Dispose();
+            cmdReturnQuery.Dispose();
+            daDt.Dispose();
+        }
+
+        return returnQuery;
     }
     #endregion
 }
